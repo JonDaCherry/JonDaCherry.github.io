@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>From Games - Catálogo de Videojuegos</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Header / Navbar -->
+    <header>
+        <div class="logo">
+            <h1>From<span>Games</span></h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#" class="active">Inicio</a></li>
+                <li><a href="#catalogo">Catálogo</a></li>
+                <li><a href="#busqueda">Búsqueda</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </nav>
+        <div class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Descubre Tu Próxima Aventura</h2>
+            <p>Explora nuestro catálogo de los mejores videojuegos para todas las consolas</p>
+            <a href="#catalogo" class="btn">Ver Catálogo</a>
+        </div>
+    </section>
+
+    <!-- Filtros y Búsqueda -->
+    <section class="filtros" id="busqueda">
+        <div class="container">
+            <h2>Encuentra Tu Juego</h2>
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Buscar por nombre...">
+                <button id="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="filter-options">
+                <div class="filter-group">
+                    <label for="consola-filter">Consola:</label>
+                    <select id="consola-filter">
+                        <option value="todas">Todas</option>
+                        <option value="playstation">PlayStation</option>
+                        <option value="xbox">Xbox</option>
+                        <option value="nintendo">Nintendo</option>
+                        <option value="pc">PC</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="genero-filter">Género:</label>
+                    <select id="genero-filter">
+                        <option value="todos">Todos</option>
+                        <option value="accion">Acción</option>
+                        <option value="aventura">Aventura</option>
+                        <option value="rpg">RPG</option>
+                        <option value="deportes">Deportes</option>
+                        <option value="estrategia">Estrategia</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="year-filter">Año:</label>
+                    <select id="year-filter">
+                        <option value="todos">Todos</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                        <option value="2020">2020</option>
+                        <option value="older">Anteriores</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Catálogo de Juegos -->
+    <section class="catalogo" id="catalogo">
+        <div class="container">
+            <h2>Nuestro Catálogo</h2>
+            <div class="juegos-grid" id="juegos-container">
+                <!-- Los juegos se cargarán dinámicamente con JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>From<span>Games</span></h2>
+                    <p>Tu destino para descubrir los mejores videojuegos</p>
+                </div>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/fromgames" target="_blank"><i class="fab fa-facebook"></i></a>
+                    <a href="https://wa.me/1234567890" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://www.youtube.com/c/fromgames" target="_blank"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 From Games. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal para Detalles -->
+    <div id="game-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modal-details">
+                <!-- Detalles del juego se cargarán aquí -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html> 
