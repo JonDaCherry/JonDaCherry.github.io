@@ -3,12 +3,12 @@ const juegos = [
     {
         id: 1,
         nombre: "7 Days to Die",
-        consola: "ps4",
+        consola: "playstation",
         genero: ["aventura", "accion"],
         year: 2013,
         imagen: "https://www.theactionpixel.com/wp-content/uploads/2016/04/7daystodie_title.jpg",
         descripcion: "Explora el reino de Hyrule en esta épica aventura de mundo abierto. Enfréntate a peligros, resuelve rompecabezas y derrota al malvado Ganon para salvar al reino.",
-        desarrollador: "Nintendo",
+        desarrollador: "The Fun Pimps",
         puntuacion: 97,
         precio: 59.99,
         multijugador: false
