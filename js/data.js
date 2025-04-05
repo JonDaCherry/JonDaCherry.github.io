@@ -97,7 +97,7 @@ const juegos = [
         consola: "playstation 4",
         genero: ["rpg", "accion", "aventura"],
         year: 2023,
-        imagen: "https://image-1.uhdpaper.com/wallpaper/assassins-creed-mirage-basim-4k-wallpaper-uhdpaper.com-491@1@i.jpg",
+        imagen: "https://image-1.uhdpaper.com/wallpaper/assassins-creed-mirage-basim-hd-wallpaper-uhdpaper.com-491@1@i.jpg",
         descripcion: "Assassin's Creed Mirage es un videojuego de acción y aventura en el que los jugadores asumen el papel de Basim, un asesino que se convierte en un asesino.",
         desarrollador: "Ubisoft",
         puntuacion: 96,
