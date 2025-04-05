@@ -1,6 +1,6 @@
-# GameVerse - Catálogo de Videojuegos
+# From Games - Catálogo de Videojuegos
 
-Un sitio web responsivo que muestra un catálogo de videojuegos para diferentes consolas (PlayStation, Xbox, Nintendo y PC).
+Un sitio web responsivo que muestra un catálogo de videojuegos para diferentes consolas (PlayStation y PC).
 
 ## Características Principales
 
