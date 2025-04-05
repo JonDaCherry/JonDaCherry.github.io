@@ -15,15 +15,14 @@ const juegos = [
     },
     {
         id: 2,
-        nombre: "God of War Ragnarök",
+        nombre: "A Plague Tale Innocence",
         consola: "playstation",
         genero: ["accion", "aventura"],
         year: 2022,
-        imagen: "https://playtecgames.com/wp-content/uploads/2022/11/GOWRPS4.jpg",
-        descripcion: "Kratos y Atreus se embarcan en un viaje mitológico épico mientras enfrentan el inminente Ragnarök y la amenaza de los dioses nórdicos.",
-        desarrollador: "Santa Monica Studio",
-        puntuacion: 94,
-        precio: 69.99,
+        imagen: "https://c4.wallpaperflare.com/wallpaper/581/28/1024/video-games-playstation-4-a-plague-tale-innocence-hd-wallpaper-preview.jpg",
+        descripcion: "La historia sigue a Amicia y a su hermano pequeño Hugo, quienes intentan sobrevivir en un mundo cruel y brutal asolado por la guerra y la Peste Negra.",
+        desarrollador: "Asobo Studio",
+        puntuacion: 81,
         multijugador: false
     },
     {
