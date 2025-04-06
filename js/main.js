@@ -179,10 +179,20 @@ function mostrarDetalles(juegoId) {
 // Función de utilidad para obtener el nombre completo de la consola
 function getConsolaNombre(consolaKey) {
     const consolas = {
-        'playstation': 'PlayStation',
+        'playstation 4': 'PlayStation 4',	
+        'playstation 3': 'PlayStation 3',
+        'playstation 2': 'PlayStation 2',
+        'Playstation 2': 'PlayStation 2',
+        'Playstation 3': 'PlayStation 3',
+        'Playstation 4': 'PlayStation 4',
+        'psp': 'PSP',
         'xbox': 'Xbox',
         'nintendo': 'Nintendo',
-        'pc': 'PC'
+        'pc': 'PC',
+        'Psp': 'PSP',
+        'Xbox': 'Xbox',
+        'Nintendo': 'Nintendo',
+        'PC': 'PC'
     };
     
     return consolas[consolaKey] || consolaKey;
