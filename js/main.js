@@ -5,21 +5,31 @@ const searchBtn = document.getElementById('search-btn');
 const consolaFilter = document.getElementById('consola-filter');
 const generoFilter = document.getElementById('genero-filter');
 const yearFilter = document.getElementById('year-filter');
+const puntuacionFilter = document.getElementById('puntuacion-filter');
 const modal = document.getElementById('game-modal');
 const modalDetails = document.getElementById('modal-details');
 const closeModal = document.querySelector('.close');
 const menuToggle = document.querySelector('.menu-toggle');
 const nav = document.querySelector('nav');
 
-// Inicialización de la página
-document.addEventListener('DOMContentLoaded', () => {
-    // Cargar juegos iniciales
-    cargarJuegos(juegos);
-    
-    // Configurar eventos
-    setupEventListeners();
-});
+let juegosActualizados = [];
 
+document.addEventListener('DOMContentLoaded', async () => {
+    // Cargar versión estática inicial
+    juegosActualizados = [...juegos];
+    cargarJuegos(juegosActualizados);
+    setupEventListeners();
+    
+    // Actualizar con datos de la API en segundo plano
+    try {
+        const actualizados = await actualizarPuntuaciones();
+        juegosActualizados = actualizados;
+        cargarJuegos(juegosActualizados);
+        agregarListenersDetalles();
+    } catch (error) {
+        console.error("Error al actualizar:", error);
+    }
+});
 // Configurar todos los event listeners
 function setupEventListeners() {
     // Eventos de filtrado y búsqueda
@@ -33,6 +43,7 @@ function setupEventListeners() {
     consolaFilter.addEventListener('change', filtrarJuegos);
     generoFilter.addEventListener('change', filtrarJuegos);
     yearFilter.addEventListener('change', filtrarJuegos);
+    puntuacionFilter.addEventListener('change', filtrarJuegos);
     
     // Evento para cerrar el modal
     closeModal.addEventListener('click', () => {
@@ -58,9 +69,10 @@ function filtrarJuegos() {
     const consolaSeleccionada = consolaFilter.value;
     const generoSeleccionado = generoFilter.value;
     const yearSeleccionado = yearFilter.value;
+    const puntuacionSeleccionada = puntuacionFilter.value;
     
     // Filtrar juegos según criterios
-    const juegosFiltrados = juegos.filter(juego => {
+    const juegosFiltrados = juegosActualizados.filter(juego => {
         // Filtro por texto de búsqueda
         const coincideTexto = juego.nombre.toLowerCase().includes(textoBusqueda) || 
                              juego.descripcion.toLowerCase().includes(textoBusqueda);
@@ -69,20 +81,39 @@ function filtrarJuegos() {
         const coincideConsola = consolaSeleccionada === 'todas' || juego.consola === consolaSeleccionada;
         
         // Filtro por género
-        const coincideGenero = generoSeleccionado === 'todos' || juego.genero.includes(generoSeleccionado);
+        const coincideGenero = generoSeleccionado === 'todos' || 
+                               juego.genero.some(g => g.toLowerCase() === generoSeleccionado.toLowerCase());
         
         // Filtro por año
         let coincideYear = false;
         if (yearSeleccionado === 'todos') {
             coincideYear = true;
         } else if (yearSeleccionado === 'older') {
-            coincideYear = juego.year < 2020;
+            coincideYear = juego.year < 2019;
         } else {
             coincideYear = juego.year === parseInt(yearSeleccionado);
         }
         
+        // Filtro por puntuación
+        let coincidePuntuacion = false;
+        const puntuacion = juego.puntuacionActualizada !== undefined && juego.puntuacionActualizada !== null 
+            ? parseFloat(juego.puntuacionActualizada) 
+            : juego.puntuacion;
+        
+        if (puntuacionSeleccionada === 'todos') {
+            coincidePuntuacion = true;
+        } else if (puntuacionSeleccionada === '90') {
+            coincidePuntuacion = puntuacion >= 90;
+        } else if (puntuacionSeleccionada === '80') {
+            coincidePuntuacion = puntuacion >= 80 && puntuacion < 90;
+        } else if (puntuacionSeleccionada === '70') {
+            coincidePuntuacion = puntuacion >= 70 && puntuacion < 80;
+        } else if (puntuacionSeleccionada === 'menos70') {
+            coincidePuntuacion = puntuacion < 70;
+        }
+        
         // Devolver true solo si cumple todos los criterios
-        return coincideTexto && coincideConsola && coincideGenero && coincideYear;
+        return coincideTexto && coincideConsola && coincideGenero && coincideYear && coincidePuntuacion;
     });
     
     // Cargar los juegos filtrados en el contenedor
@@ -93,50 +124,61 @@ function filtrarJuegos() {
         juegosContainer.innerHTML = '<p class="no-results">No se encontraron juegos que coincidan con tu búsqueda. ¡Intenta con otros criterios!</p>';
     }
 }
-
-// Función para cargar juegos en el contenedor
+//Función para cargar juegos
 function cargarJuegos(juegosArray) {
-    // Limpiar el contenedor
     juegosContainer.innerHTML = '';
     
-    // Crear una tarjeta para cada juego
     juegosArray.forEach(juego => {
-        // Crear elementos del DOM
+        const consolaClase = juego.consola.toLowerCase().replace(/\s+/g, '-');
+        const puntuacion = juego.puntuacionActualizada !== undefined && juego.puntuacionActualizada !== null 
+            ? parseFloat(juego.puntuacionActualizada) 
+            : juego.puntuacion;
+        const puntuacionMostrada = `${puntuacion.toFixed(0)}/100`;
+        const esActualizada = juego.puntuacionActualizada !== undefined && juego.puntuacionActualizada !== null;
+        
         const juegoCard = document.createElement('div');
         juegoCard.className = 'juego-card';
-        
-        // Clases específicas para animar la entrada
-        juegoCard.classList.add('fade-in');
-        
-        // Construir HTML interno
-        juegoCard.innerHTML = `
-            <img src="${juego.imagen}" alt="${juego.nombre}" class="juego-img">
+            juegoCard.innerHTML = `
+                <img src="${juego.imagen}" alt="${juego.nombre}" class="juego-img">
             <div class="juego-info">
                 <h3>${juego.nombre}</h3>
-                <span class="consola ${juego.consola}">${getConsolaNombre(juego.consola)}</span>
+                <span class="consola ${consolaClase}">${getConsolaNombre(juego.consola)}</span>
                 <p>Lanzamiento: ${juego.year}</p>
                 <p>Género: ${formatearGeneros(juego.genero)}</p>
+                <div class="puntuacion-container">
+                    <span class="puntuacion ${esActualizada ? 'actualizada' : ''}">
+                        ${puntuacionMostrada}
+                        ${esActualizada ? '<span class="badge-actualizada">Live</span>' : ''}
+                    </span>
+                </div>
                 <button class="details-btn" data-id="${juego.id}">Ver Detalles</button>
             </div>
         `;
         
-        // Agregar al contenedor
         juegosContainer.appendChild(juegoCard);
-        
-        // Agregar evento para mostrar detalles
-        const detallesBtn = juegoCard.querySelector('.details-btn');
-        detallesBtn.addEventListener('click', () => mostrarDetalles(juego.id));
+    });
+    
+    agregarListenersDetalles();
+}
+
+function agregarListenersDetalles() {
+    document.querySelectorAll('.details-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const juegoId = parseInt(btn.dataset.id);
+            mostrarDetalles(juegoId);
+        });
     });
 }
 
 // Función para mostrar los detalles de un juego en el modal
 function mostrarDetalles(juegoId) {
-    // Encontrar el juego por ID
-    const juego = juegos.find(j => j.id === juegoId);
-    
+    const juego = juegosActualizados.find(j => j.id === juegoId);
     if (!juego) return;
+
+    const esActualizada = juego.puntuacionActualizada !== undefined && juego.puntuacionActualizada !== null;
+    const puntuacion = esActualizada ? parseFloat(juego.puntuacionActualizada) : juego.puntuacion;
+    const puntuacionMostrada = `${puntuacion.toFixed(0)}/100`;
     
-    // Preparar contenido del modal
     modalDetails.innerHTML = `
         <div class="modal-img">
             <img src="${juego.imagen}" alt="${juego.nombre}">
@@ -144,8 +186,12 @@ function mostrarDetalles(juegoId) {
         <div class="modal-info">
             <h3>${juego.nombre}</h3>
             <div class="modal-tags">
-                <span class="modal-tag consola ${juego.consola}">${getConsolaNombre(juego.consola)}</span>
-                ${juego.genero.map(g => `<span class="modal-tag">${capitalizarPrimeraLetra(g)}</span>`).join('')}
+                <span class="modal-tag consola ${juego.consola.toLowerCase().replace(/\s+/g, '-')}">
+                    ${getConsolaNombre(juego.consola)}
+                </span>
+                ${juego.genero.map(g => `
+                    <span class="modal-tag">${capitalizarPrimeraLetra(g)}</span>
+                `).join('')}
                 <span class="modal-tag">${juego.year}</span>
             </div>
             <div class="modal-description">
@@ -158,11 +204,14 @@ function mostrarDetalles(juegoId) {
                 </div>
                 <div class="stat-item">
                     <div class="stat-title">Puntuación</div>
-                    <div class="stat-value">${juego.puntuacion}/100</div>
+                    <div class="stat-value ${esActualizada ? 'actualizada' : ''}">
+                        ${puntuacionMostrada}
+                        ${esActualizada ? '<span class="badge-actualizada">Live</span>' : ''}
+                    </div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-title">Precio</div>
-                    <div class="stat-value">$${juego.precio}</div>
+                    <div class="stat-value">$${juego.precio.toFixed(2)}</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-title">Multijugador</div>
@@ -172,14 +221,20 @@ function mostrarDetalles(juegoId) {
         </div>
     `;
     
-    // Mostrar el modal
     modal.style.display = 'block';
 }
 
 // Función de utilidad para obtener el nombre completo de la consola
 function getConsolaNombre(consolaKey) {
     const consolas = {
-        'playstation': 'PlayStation',
+        'playstation 4': 'Playstation 4',	
+        'playstation 3': 'Playstation 3',
+        'playstation 2': 'Playstation 2',
+        'psp': 'PSP',
+        'xbox': 'Xbox',
+        'nintendo': 'Nintendo',
+        'pc': 'PC',
+        'psp': 'PSP',
         'xbox': 'Xbox',
         'nintendo': 'Nintendo',
         'pc': 'PC'
@@ -197,6 +252,7 @@ function formatearGeneros(generos) {
 function capitalizarPrimeraLetra(texto) {
     return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
+
 
 // Animación al hacer scroll
 window.addEventListener('scroll', () => {

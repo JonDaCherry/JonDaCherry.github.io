@@ -18,7 +18,7 @@ const juegos = [
         nombre: "A Plague Tale Innocence",
         consola: "playstation 4",
         genero: ["accion", "aventura"],
-        year: 2022,
+        year: 2019,
         imagen: "https://c4.wallpaperflare.com/wallpaper/581/28/1024/video-games-playstation-4-a-plague-tale-innocence-hd-wallpaper-preview.jpg",
         descripcion: "La historia sigue a Amicia y a su hermano pequeño Hugo, quienes intentan sobrevivir en un mundo cruel y brutal asolado por la guerra y la Peste Negra.",
         desarrollador: "Asobo Studio",
@@ -42,7 +42,7 @@ const juegos = [
     {
         id: 4,
         nombre: "ARK Survival Evolved",
-        consola: "Playstation 4",
+        consola: "playstation 4",
         genero: ["rpg", "accion", "survival"],
         year: 2017,
         imagen: "https://c4.wallpaperflare.com/wallpaper/343/792/921/video-game-ark-survival-evolved-ark-survival-evolved-battle-dinosaur-hd-wallpaper-preview.jpg",
@@ -132,6 +132,7 @@ const juegos = [
     },
     {
         id: 11,
+
         nombre: "Assassins Creed Syndicate",
         consola: "playstation 4",
         genero: ["accion", "rpg", "aventura"],
@@ -182,4 +183,43 @@ const juegos = [
         precio: 59.99,
     }
 
+
 ]; 
+
+
+async function obtenerPuntuacionOpenCritic(nombreJuego) {
+    try {
+        const formattedName = nombreJuego.toLowerCase()
+            .replace(/ /g, "-")
+            .replace(/[:']/g, "");
+        
+        const response = await fetch(
+            `https://api.opencritic.com/api/game/${formattedName}`
+        );
+        
+        if (!response.ok) return null;
+        
+        const data = await response.json();
+        return data?.medianScore || null;
+        
+    } catch (error) {
+        console.error(`Error en ${nombreJuego}:`, error.message);
+        return null;
+    }
+}
+
+async function actualizarPuntuaciones() {
+    try {
+        const actualizaciones = await Promise.allSettled(
+            juegos.map(async juego => {
+                const nueva = await obtenerPuntuacionOpenCritic(juego.nombre);
+                return { ...juego, puntuacionActualizada: nueva };
+            })
+        );
+        return actualizaciones.map(result => result.status === 'fulfilled' ? result.value : result.reason);
+    } catch (error) {
+        console.error("Error actualizando:", error);
+        return juegos;
+    }
+}
+
