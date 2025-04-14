@@ -18,7 +18,7 @@ const juegos = [
         nombre: "A Plague Tale Innocence",
         consola: "playstation 4",
         genero: ["accion", "aventura"],
-        year: 2019,
+        year: 2022,
         imagen: "https://c4.wallpaperflare.com/wallpaper/581/28/1024/video-games-playstation-4-a-plague-tale-innocence-hd-wallpaper-preview.jpg",
         descripcion: "La historia sigue a Amicia y a su hermano pequeño Hugo, quienes intentan sobrevivir en un mundo cruel y brutal asolado por la guerra y la Peste Negra.",
         desarrollador: "Asobo Studio",
@@ -42,7 +42,7 @@ const juegos = [
     {
         id: 4,
         nombre: "ARK Survival Evolved",
-        consola: "playstation 4",
+        consola: "Playstation 4",
         genero: ["rpg", "accion", "survival"],
         year: 2017,
         imagen: "https://c4.wallpaperflare.com/wallpaper/343/792/921/video-game-ark-survival-evolved-ark-survival-evolved-battle-dinosaur-hd-wallpaper-preview.jpg",
@@ -131,6 +131,7 @@ const juegos = [
         multijugador: false
     },
     {
+       
         id: 11,
 
         nombre: "Assassins Creed Syndicate",
@@ -162,13 +163,13 @@ const juegos = [
         nombre: "Assassins Creed Valhalla",
         consola: "playstation 4",
         genero: ["accion", "aventura", "rpg"],
-        year: 2020,
+        year: 2014,
         imagen: "https://wallpapercave.com/dwp2x/wp1869821.jpg",
         descripcion: "Assassin's Creed Unity es un videojuego de acción y aventura en el que los jugadores asumen el papel de Arno Dorian, un asesino que se convierte en un asesino.",
         desarrollador: "Ubisoft",
         puntuacion: 97,
         precio: 59.99,
-        multijugador: true
+        multijugador: true 
     },
     {
         id: 14,
@@ -176,50 +177,23 @@ const juegos = [
         consola: "playstation 4",
         genero: ["accion", "aventura", "rpg"],
         year: 2023,
-        imagen: "https://wallpapercave.com/dwp2x/wp12069929.jpg",
+        imagen: "https://imgs.search.brave.com/zHXSZFjq8Wi8C35wOY4sWj6_FjsDhjVMrfnu5EwRmho/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJiYXQuY29t/L2ltZy85NDQxODIt/YXRvbWljLWhlYXJ0/LmpwZw",
         descripcion: "El juego se desarrolla en una versión alternativa de la Unión Soviética durante la década de 1950, donde el rápido avance tecnológico y los experimentos secretos han dado lugar a criaturas mutantes, máquinas aterradoras y robots superpoderosos que han comenzado a rebelarse contra los humanos.",
         desarrollador: "Manticore Games",
-        puntuacion: 97,
+        puntuacion: 90,
         precio: 59.99,
-    }
+        multijugador: true 
+    
+    
+    
+    
 
+
+
+
+
+
+
+    }
 
 ]; 
-
-
-async function obtenerPuntuacionOpenCritic(nombreJuego) {
-    try {
-        const formattedName = nombreJuego.toLowerCase()
-            .replace(/ /g, "-")
-            .replace(/[:']/g, "");
-        
-        const response = await fetch(
-            `https://api.opencritic.com/api/game/${formattedName}`
-        );
-        
-        if (!response.ok) return null;
-        
-        const data = await response.json();
-        return data?.medianScore || null;
-        
-    } catch (error) {
-        console.error(`Error en ${nombreJuego}:`, error.message);
-        return null;
-    }
-}
-
-async function actualizarPuntuaciones() {
-    try {
-        const actualizaciones = await Promise.allSettled(
-            juegos.map(async juego => {
-                const nueva = await obtenerPuntuacionOpenCritic(juego.nombre);
-                return { ...juego, puntuacionActualizada: nueva };
-            })
-        );
-        return actualizaciones.map(result => result.status === 'fulfilled' ? result.value : result.reason);
-    } catch (error) {
-        console.error("Error actualizando:", error);
-        return juegos;
-    }
-}
-
